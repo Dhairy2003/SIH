@@ -1,5 +1,6 @@
 import tensorflow as tf
-from tensorflow.keras import models, layers
+# from tensorflow.keras import models, layers
+from keras import layers,models
 import matplotlib.pyplot as plt
 
 IMAGE_SIZE=256
@@ -141,7 +142,7 @@ plt.title('Training and Validation Accuracy')
 
 plt.subplot(1,2,2)
 plt.plot(range(EPOCHS),loss,label = 'Training Loss')
-plt.plot(range.(EPOCHS),val_loss,label='Validation Loss')
+plt.plot(range(EPOCHS),val_loss,label='Validation Loss')
 plt.legend(loc = 'upper right')
 plt.title('Training and Validation Loss')
 plt.show()
