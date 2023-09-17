@@ -1,12 +1,11 @@
 import tensorflow as tf
-# from tensorflow.keras import models, layers
 from keras import layers,models
 import matplotlib.pyplot as plt
 
 BATCH_SIZE = 32
 IMAGE_SIZE = 256
 CHANNELS=3
-EPOCHS=6
+EPOCHS=50
 
 dataset = tf.keras.preprocessing.image_dataset_from_directory(
     "D:\SIH project\Diseases",
@@ -17,35 +16,21 @@ dataset = tf.keras.preprocessing.image_dataset_from_directory(
 )
 
 class_names = dataset.class_names
-class_names
+print(class_names)
 
 for image_batch, labels_batch in dataset.take(1):
-    print(image_batch.shape)
-    print(labels_batch.numpy())
+    image_batch.shape
+    labels_batch.numpy()
 
 
-plt.figure(figsize=(10, 10))
-for image_batch, labels_batch in dataset.take(1):
-    for i in range(12):
-        ax = plt.subplot(3, 4, i + 1)
-        plt.imshow(image_batch[i].numpy().astype("uint8"))
-        plt.title(class_names[labels_batch[i]])
-        plt.axis("off")
+# plt.figure(figsize=(10, 10))
+# for image_batch, labels_batch in dataset.take(1):
+#     for i in range(12):
+#         ax = plt.subplot(3, 4, i + 1)
+#         plt.imshow(image_batch[i].numpy().astype("uint8"))
+#         plt.title(class_names[labels_batch[i]])
+#         plt.axis("off")
 
-
-# len(dataset)
-# train_size = 0.8
-# len(dataset)*train_size
-# train_ds = dataset.take(54)
-# len(train_ds)
-# test_ds = dataset.skip(54)
-# len(test_ds)
-# val_size=0.1
-# len(dataset)*val_size
-# val_ds = test_ds.take(6)
-# len(val_ds)
-# test_ds = test_ds.skip(6)
-# len(test_ds)
 
 
 def get_dataset_partitions_tf(ds, train_split=0.8, val_split=0.1, test_split=0.1, shuffle=True, shuffle_size=10000):
@@ -66,9 +51,6 @@ def get_dataset_partitions_tf(ds, train_split=0.8, val_split=0.1, test_split=0.1
     return train_ds, val_ds, test_ds
 
 train_ds, val_ds, test_ds = get_dataset_partitions_tf(dataset)
-# len(train_ds)
-# len(val_ds)
-# len(test_ds)
 
 train_ds = train_ds.cache().shuffle(1000).prefetch(buffer_size=tf.data.AUTOTUNE)
 val_ds = val_ds.cache().shuffle(1000).prefetch(buffer_size=tf.data.AUTOTUNE)
@@ -115,8 +97,6 @@ model = models.Sequential([
 model.build(input_shape=input_shape)
 
 
-model.summary()
-
 model.compile(
     optimizer='adam',
     loss=tf.keras.losses.SparseCategoricalCrossentropy(from_logits=False),
@@ -128,7 +108,7 @@ history = model.fit(
     batch_size=BATCH_SIZE,
     validation_data=val_ds,
     verbose=1,
-    epochs=6,
+    epochs=50,
 )
 
 scores = model.evaluate(test_ds)
@@ -138,36 +118,33 @@ history.params
 history.history.keys()
 type(history.history['loss'])
 len(history.history['loss'])
-history.history['loss'][:5] # show loss for first 5 epochs
+history.history['loss'][:5]
 
 acc = history.history['accuracy']
-# val_acc = history.history['val_accuracy']
-
 loss = history.history['loss']
-# val_loss = history.history['val_loss']
 
-plt.figure(figsize=(8, 8))
-plt.subplot(1, 2, 1)
-plt.plot(range(EPOCHS), acc, label='Training Accuracy')
-# plt.plot(range(EPOCHS), val_acc, label='Validation Accuracy')
-plt.legend(loc='lower right')
-plt.title('Training and Validation Accuracy')
+# plt.figure(figsize=(8, 8))
+# plt.subplot(1, 2, 1)
+# plt.plot(range(EPOCHS), acc, label='Training Accuracy')
+# # plt.plot(range(EPOCHS), val_acc, label='Validation Accuracy')
+# plt.legend(loc='lower right')
+# plt.title('Training and Validation Accuracy')
 
-plt.subplot(1, 2, 2)
-plt.plot(range(EPOCHS), loss, label='Training Loss')
-# plt.plot(range(EPOCHS), val_loss, label='Validation Loss')
-plt.legend(loc='upper right')
-plt.title('Training and Validation Loss')
-plt.show()
+# plt.subplot(1, 2, 2)
+# plt.plot(range(EPOCHS), loss, label='Training Loss')
+# # plt.plot(range(EPOCHS), val_loss, label='Validation Loss')
+# plt.legend(loc='upper right')
+# plt.title('Training and Validation Loss')
+# # plt.show()
 
 import numpy as np
-for images_batch, labels_batch in test_ds.take(1):
+for images_batch, labels_batch in test_ds.take(2):
     
     first_image = images_batch[0].numpy().astype('uint8')
     first_label = labels_batch[0].numpy()
     
     print("first image to predict")
-    plt.imshow(first_image)
+    # plt.imshow(first_image)
     print("actual label:",class_names[first_label])
     
     batch_prediction = model.predict(images_batch)
@@ -195,5 +172,5 @@ for images, labels in test_ds.take(1):
         plt.title(f"Actual: {actual_class},\n Predicted: {predicted_class}.\n Confidence: {confidence}%")
         
         plt.axis("off")
-
+plt.show()
 
